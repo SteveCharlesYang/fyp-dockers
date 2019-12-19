@@ -1,0 +1,50 @@
+version: "3"
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:5
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_USER: "emr"
+      MYSQL_DATABASE: "emr"
+      MYSQL_PASSWORD: "openemr"
+      MYSQL_ROOT_PASSWORD: "0p3NeMr5ysY3m"
+    #expose:
+    #- '3306'
+    networks:
+      emrnet:
+        ipv4_address: 172.16.0.2
+    volumes:
+      - emr-data:/var/lib/mysql
+  emr:
+    container_name: emr
+    build: ./openemr
+    environment:
+      #MYSQL_HOST: "mysql"
+      MYSQL_ROOT_PASS: "0p3NeMr5ysY3m"
+      #MYSQL_ROOT_USER: "root"
+      #MYSQL_USER: "emr"
+      #MYSQL_PASS: "openemr"
+      #MYSQL_DATABASE: "emr"
+      #OE_USER: "Charles"
+      #OE_PASS: "1357924680"
+    links:
+      - mysql 
+    networks:
+      emrnet:
+        ipv4_address: 172.16.0.3
+    depends_on:
+      - mysql
+    expose:
+      - '80'
+      - '443'
+    
+networks:
+  emrnet:
+    ipam:
+      config:
+        - subnet: "172.16.0.0/24"
+
+volumes:
+  emr-data:
