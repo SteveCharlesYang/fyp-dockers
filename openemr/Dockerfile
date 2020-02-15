@@ -1,6 +1,6 @@
 FROM alpine:3.10
-RUN echo http://mirrors.uestc.cn/alpine/v3.10/main > /etc/apk/repositories; \
-    echo http://mirrors.uestc.cn/alpine/v3.10/community >> /etc/apk/repositories
+RUN echo http://mirrors.uestc.cn/mirrors/alpine/v3.10/main > /etc/apk/repositories; \
+    echo http://mirrors.uestc.cn/mirrors/alpine/v3.10/community >> /etc/apk/repositories
 #Install dependencies
 RUN apk --no-cache upgrade
 RUN apk add --no-cache \
@@ -19,6 +19,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 #clone openemr
 RUN apk add --no-cache git build-base libffi-dev python-dev \
     && git clone https://github.com/SteveCharlesYang/fyp-openemr.git --branch rel-502 --depth 1 \
+    && mv fyp-openemr openemr \
     && rm -rf openemr/.git \
     && cd openemr \
     && composer install \
